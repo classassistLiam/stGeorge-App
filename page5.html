@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#176b3a">
+<title>St George Youth | Asset Register</title>
+<style>
+:root{
+  --green:#176b3a;--green-2:#23864c;--lime:#a8d94b;--ink:#17251d;--muted:#718078;
+  --line:#e5ece7;--paper:#f5f8f5;--white:#fff;--gold:#d8ad55;--red:#c84c4c;
+  --shadow:0 12px 32px rgba(22,57,36,.07);--radius:18px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:252px minmax(0,1fr)}
+.sidebar{background:linear-gradient(180deg,#145c32,#104a2a);color:#fff;padding:26px 17px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px}
+.brand-mark{width:42px;height:42px;border-radius:14px;background:var(--lime);display:grid;place-items:center;color:#174a2b;font-weight:900;font-size:19px;box-shadow:0 6px 18px #092d1b55}
+.brand strong{display:block;font-size:14px;letter-spacing:.02em}.brand small{display:block;color:#c4ddca;font-size:11px;margin-top:3px}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:#a9cbb4;padding:0 12px;margin-bottom:8px}
+.nav{display:grid;gap:5px}
+.nav button{border:0;background:transparent;color:#d7e8dc;text-align:left;padding:12px;border-radius:11px;display:flex;align-items:center;gap:12px;font-size:13px}
+.nav button.active,.nav button:hover{background:#ffffff1c;color:#fff}
+.nav .ico{width:19px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid #ffffff25;padding:18px 8px 0;color:#c7dfce;font-size:11px;line-height:1.6}
+.main{min-width:0}
+.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;position:sticky;top:0;z-index:5}
+.breadcrumb{font-size:12px;color:var(--muted)}.breadcrumb b{color:var(--ink);font-weight:650}
+.top-actions{display:flex;align-items:center;gap:12px}
+.status-pill{background:#edf7ef;color:var(--green);padding:8px 11px;border-radius:30px;font-size:11px;font-weight:700}
+.avatar{width:34px;height:34px;border-radius:50%;background:#e8f2e9;color:var(--green);display:grid;place-items:center;font-size:12px;font-weight:800}
+.content{max-width:1440px;margin:auto;padding:32px 34px 60px}
+.page-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:26px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--green-2);font-weight:800;margin-bottom:9px}
+h1{font-size:clamp(25px,3vw,34px);letter-spacing:-.04em;margin:0 0 8px;font-weight:760}
+.subtitle{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
+.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:8px;transition:.18s}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 5px 14px #176b3a25}.btn-primary:hover{background:#10572f;transform:translateY(-1px)}
+.btn-light{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn-light:hover{border-color:#b9d3c0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:0 4px 16px #16392205}
+.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;font-weight:650}
+.stat-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#edf7ef;color:var(--green);font-size:16px}
+.stat-value{font-size:27px;font-weight:780;letter-spacing:-.05em;margin:14px 0 3px}
+.stat-note{font-size:10px;color:var(--muted)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 18px #16392205}
+.toolbar{padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.toolbar-left{display:flex;gap:9px;align-items:center;flex:1;flex-wrap:wrap}
+.search{position:relative;min-width:210px;max-width:310px;flex:1}
+.search input{width:100%;padding:10px 12px 10px 35px;border:1px solid var(--line);border-radius:10px;outline:none;font-size:12px;background:#fbfdfb}
+.search input:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:#82b894;box-shadow:0 0 0 3px #23864c12}
+.search span{position:absolute;left:12px;top:9px;color:#8b9b91}
+.toolbar select{border:1px solid var(--line);background:#fff;padding:10px;border-radius:10px;color:#53635a;font-size:11px;outline:none}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:780px}
+th{text-align:left;padding:13px 17px;background:#fbfdfb;color:#819087;font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+td{padding:15px 17px;border-top:1px solid #edf1ee;font-size:11px;vertical-align:middle}
+tbody tr:hover{background:#fbfdfb}
+.asset-name{font-weight:750;font-size:12px;color:#20352a}.asset-id{font-size:10px;color:#91a097;margin-top:4px}
+.asset-cell{display:flex;align-items:center;gap:11px}
+.asset-thumb{width:37px;height:37px;border-radius:11px;background:#edf6ef;display:grid;place-items:center;font-size:17px}
+.category{color:#66766c}.location{color:#66766c}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:30px;padding:6px 9px;font-size:9px;font-weight:750;white-space:nowrap}
+.badge:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.good{background:#eaf6ed;color:#27804a}.fair{background:#fff6e4;color:#ad7b20}.poor{background:#fff0ed;color:#c65b49}
+.available{background:#eaf6ed;color:#27804a}.assigned{background:#eef2ff;color:#5968b5}.repair{background:#fff3e8;color:#b66a28}.retired{background:#f0f1f1;color:#77817b}
+.row-actions{display:flex;gap:6px}.icon-btn{border:1px solid var(--line);background:#fff;width:29px;height:29px;border-radius:8px;color:#65766b}.icon-btn:hover{background:#edf7ef;color:var(--green)}
+.table-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;color:#87958c;font-size:10px}
+.empty{padding:42px;text-align:center;color:var(--muted);font-size:12px}
+.section{display:none}.section.active{display:block}
+.notice{padding:13px 15px;border-radius:12px;background:#f0f7ed;border:1px solid #dfedda;color:#4e6d50;font-size:11px;line-height:1.6;margin-bottom:18px}
+.modal-backdrop{position:fixed;inset:0;background:#0d2418a8;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.modal-backdrop.open{display:flex}
+.modal{width:min(610px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 24px 80px #071b10aa}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:21px 23px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:17px;margin:0}.close{border:0;background:#f1f5f2;border-radius:8px;width:30px;height:30px;font-size:17px;color:#52645a}
+.modal-body{padding:22px 23px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:750;color:#53645a}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 11px;font-size:12px;outline:none;background:#fff;color:var(--ink)}
+.field textarea{min-height:70px;resize:vertical}
+.modal-foot{display:flex;justify-content:flex-end;gap:9px;padding:16px 23px;border-top:1px solid var(--line)}
+.toast{position:fixed;bottom:22px;right:22px;background:#173d28;color:#fff;padding:12px 16px;border-radius:11px;font-size:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:40}
+.toast.show{opacity:1;transform:translateY(0)}
+.mobile-menu{display:none}
+@media(max-width:1050px){.app{grid-template-columns:215px 1fr}.stats{grid-template-columns:repeat(2,1fr)}.content{padding:26px 22px}}
+@media(max-width:720px){
+ .app{display:block}.sidebar{position:fixed;z-index:15;inset:0 auto 0 0;width:250px;transform:translateX(-105%);transition:.22s;box-shadow:20px 0 50px #10291b33}.sidebar.open{transform:translateX(0)}
+ .topbar{height:64px;padding:0 17px}.mobile-menu{display:inline-flex;border:0;background:#edf6ef;color:var(--green);border-radius:9px;width:34px;height:34px;align-items:center;justify-content:center;margin-right:10px}
+ .topbar-left{display:flex;align-items:center}.content{padding:24px 15px 42px}.page-heading{display:block}.page-heading .btn{margin-top:17px}
+ .stats{gap:9px}.stat{padding:14px}.stat-value{font-size:23px}.stat-note{font-size:9px}
+ .toolbar{align-items:stretch}.toolbar-left{width:100%}.search{max-width:none;min-width:100%}.toolbar select{flex:1}
+ .form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.status-pill{display:none}
+}
+@media(max-width:390px){.stats{grid-template-columns:1fr 1fr}.stat-value{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-mark">SG</div><div><strong>ST GEORGE YOUTH</strong><small>Community Hub · Management</small></div></div>
+  <div><div class="nav-label">Workspace</div><nav class="nav">
+    <button class="active" data-view="assets"><span class="ico">▦</span> Asset register</button>
+    <button data-view="maintenance"><span class="ico">⌁</span> Maintenance log</button>
+    <button data-view="reports"><span class="ico">▤</span> Reports & exports</button>
+  </nav></div>
+  <div><div class="nav-label">Administration</div><nav class="nav">
+    <button data-view="guide"><span class="ico">ⓘ</span> How it works</button>
+  </nav></div>
+  <div class="sidebar-bottom">ST GEORGE YOUTH<br>Stewardship • Accountability • Service<br><span style="color:#a8d94b">●</span> Local workspace active</div>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left"><button class="mobile-menu" id="menuBtn" aria-label="Open menu">☰</button><div class="breadcrumb">St George Youth <span style="padding:0 7px;color:#bdc8c0">/</span> <b id="crumb">Asset register</b></div></div>
+    <div class="top-actions"><span class="status-pill">● Stewardship workspace</span><div class="avatar">SG</div></div>
+  </header>
+  <div class="content">
+    <section class="section active" id="assets">
+      <div class="page-heading"><div><div class="eyebrow">Resources & stewardship</div><h1>Asset register</h1><p class="subtitle">A clear record of the equipment, resources and property entrusted to St George Youth.</p></div><button class="btn btn-primary" id="addAssetBtn">＋ Add an asset</button></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-top">Total assets <span class="stat-icon">▦</span></div><div class="stat-value" id="totalAssets">0</div><div class="stat-note">Items recorded in the register</div></div>
+        <div class="stat"><div class="stat-top">Available <span class="stat-icon">✓</span></div><div class="stat-value" id="availableAssets">0</div><div class="stat-note">Ready for youth activities</div></div>
+        <div class="stat"><div class="stat-top">Assigned / in use <span class="stat-icon">♙</span></div><div class="stat-value" id="assignedAssets">0</div><div class="stat-note">Currently with a custodian</div></div>
+        <div class="stat"><div class="stat-top">Needs attention <span class="stat-icon">⚒</span></div><div class="stat-value" id="attentionAssets">0</div><div class="stat-note">Repair or poor condition</div></div>
+      </div>
+      <div class="notice"><b>Good stewardship starts with good records.</b> Record each item, its condition, location and custodian. Use the maintenance log to keep a history of repairs and checks.</div>
+      <div class="panel">
+        <div class="toolbar"><div class="toolbar-left"><div class="search"><span>⌕</span><input id="searchInput" placeholder="Search asset, ID, custodian or location…"></div><select id="categoryFilter"><option value="">All categories</option><option>Audio & visual</option><option>Furniture</option><option>Electronics</option><option>Sports & recreation</option><option>Kitchen & catering</option><option>Other</option></select><select id="statusFilter"><option value="">All statuses</option><option>Available</option><option>Assigned</option><option>Under repair</option><option>Retired</option></select></div><button class="btn btn-light" id="exportBtn">⇩ Export CSV</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Category</th><th>Location</th><th>Custodian</th><th>Condition</th><th>Status</th><th>Actions</th></tr></thead><tbody id="assetRows"></tbody></table><div class="empty" id="emptyState" hidden>No assets match your search. Add an asset or adjust your filters.</div></div>
+        <div class="table-footer"><span id="recordCount">0 records</span><span>St George Youth · Asset register</span></div>
+      </div>
+    </section>
+    <section class="section" id="maintenance">
+      <div class="page-heading"><div><div class="eyebrow">Care & accountability</div><h1>Maintenance log</h1><p class="subtitle">Track inspections, repairs, servicing and follow-up actions for registered assets.</p></div><button class="btn btn-primary" id="addMaintenanceBtn">＋ Log maintenance</button></div>
+      <div class="panel"><div class="toolbar"><b style="font-size:13px">Maintenance history</b><span class="subtitle" style="font-size:11px">Most recent entries first</span></div><div class="table-wrap"><table style="min-width:680px"><thead><tr><th>Date</th><th>Asset</th><th>Activity</th><th>Recorded by</th><th>Cost (KSh)</th></tr></thead><tbody id="maintenanceRows"></tbody></table><div class="empty" id="maintenanceEmpty">No maintenance entries yet. Use “Log maintenance” to record the first one.</div></div></div>
+    </section>
+    <section class="section" id="reports">
+      <div class="page-heading"><div><div class="eyebrow">Visibility & reporting</div><h1>Reports & exports</h1><p class="subtitle">Keep an auditable snapshot of the resources currently recorded.</p></div></div>
+      <div class="stats"><div class="stat"><div class="stat-top">Total recorded value <span class="stat-icon">KSh</span></div><div class="stat-value" id="totalValue">0</div><div class="stat-note">Based on entered purchase values</div></div><div class="stat"><div class="stat-top">Categories <span class="stat-icon">▤</span></div><div class="stat-value" id="categoryCount">0</div><div class="stat-note">Distinct asset categories</div></div><div class="stat"><div class="stat-top">Maintenance entries <span class="stat-icon">⌁</span></div><div class="stat-value" id="maintenanceCount">0</div><div class="stat-note">Recorded service activities</div></div><div class="stat"><div class="stat-top">Retired items <span class="stat-icon">↘</span></div><div class="stat-value" id="retiredCount">0</div><div class="stat-note">No longer in active use</div></div></div>
+      <div class="panel" style="padding:22px"><h3 style="font-size:14px;margin:0 0 7px">Download your records</h3><p class="subtitle" style="margin-bottom:17px">Export asset and maintenance data as CSV files that open in Excel or Google Sheets.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" id="reportAssetExport">⇩ Export asset register</button><button class="btn btn-light" id="reportMaintenanceExport">⇩ Export maintenance log</button></div></div>
+    </section>
+    <section class="section" id="guide">
+      <div class="page-heading"><div><div class="eyebrow">A simple operating guide</div><h1>How it works</h1><p class="subtitle">A practical, transparent way to care for shared youth resources.</p></div></div>
+      <div class="panel" style="padding:22px;max-width:780px"><h3 style="margin:0 0 10px;font-size:14px">1. Register every item</h3><p class="subtitle" style="margin-bottom:22px">Give each item a unique asset ID. Add its category, purchase date and value where known, current location, custodian and condition.</p><h3 style="font-size:14px;margin-bottom:10px">2. Keep status current</h3><p class="subtitle" style="margin-bottom:22px">Use Available when ready for use, Assigned when issued to a person or team, Under repair when unavailable due to a fault, and Retired when removed from service.</p><h3 style="font-size:14px;margin-bottom:10px">3. Record maintenance</h3><p class="subtitle" style="margin-bottom:22px">Log inspections and repairs with dates, details, responsible person and cost. Keep receipts and supporting records separately.</p><h3 style="font-size:14px;margin-bottom:10px">4. Export for accountability</h3><p class="subtitle" style="margin-bottom:0">Export CSV files for committee review, handovers and periodic stocktaking.</p></div>
+      <div class="notice" style="margin-top:17px;max-width:780px"><b>Data storage note:</b> This standalone prototype stores records in this browser on this device using local storage. It does not yet sync between phones, computers or committee members. For shared live records, connect it to your approved Google Sheets / Apps Script or Firebase backend and add user authentication and role permissions.</div>
+    </section>
+  </div>
+</main>
+</div>
+<div class="modal-backdrop" id="assetModal"><div class="modal"><div class="modal-head"><h2 id="assetModalTitle">Add an asset</h2><button class="close" data-close="assetModal">×</button></div><form id="assetForm"><div class="modal-body"><input type="hidden" id="editId"><div class="form-grid">
+<div class="field"><label for="assetName">Asset name *</label><input id="assetName" required placeholder="e.g. Wireless microphone"></div>
+<div class="field"><label for="assetCategory">Category *</label><select id="assetCategory" required><option value="">Select category</option><option>Audio & visual</option><option>Furniture</option><option>Electronics</option><option>Sports & recreation</option><option>Kitchen & catering</option><option>Other</option></select></div>
+<div class="field"><label for="assetLocation">Location</label><input id="assetLocation" placeholder="e.g. Church hall store"></div>
+<div class="field"><label for="assetCustodian">Custodian / team</label><input id="assetCustodian" placeholder="e.g. Worship team"></div>
+<div class="field"><label for="assetCondition">Condition</label><select id="assetCondition"><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+<div class="field"><label for="assetStatus">Status</label><select id="assetStatus"><option>Available</option><option>Assigned</option><option>Under repair</option><option>Retired</option></select></div>
+<div class="field"><label for="assetDate">Purchase / acquisition date</label><input id="assetDate" type="date"></div>
+<div class="field"><label for="assetValue">Purchase value (KSh)</label><input id="assetValue" type="number" min="0" step="0.01" placeholder="0"></div>
+<div class="field full"><label for="assetNotes">Notes / serial number</label><textarea id="assetNotes" placeholder="Serial number, identifying details, or additional notes"></textarea></div>
+</div></div><div class="modal-foot"><button type="button" class="btn btn-light" data-close="assetModal">Cancel</button><button class="btn btn-primary" type="submit">Save asset</button></div></form></div></div>
+<div class="modal-backdrop" id="maintenanceModal"><div class="modal"><div class="modal-head"><h2>Log maintenance activity</h2><button class="close" data-close="maintenanceModal">×</button></div><form id="maintenanceForm"><div class="modal-body"><div class="form-grid">
+<div class="field full"><label for="maintenanceAsset">Asset *</label><select id="maintenanceAsset" required></select></div>
+<div class="field"><label for="maintenanceDate">Date *</label><input id="maintenanceDate" type="date" required></div>
+<div class="field"><label for="maintenanceCost">Cost (KSh)</label><input id="maintenanceCost" type="number" min="0" step=".01" placeholder="0"></div>
+<div class="field"><label for="maintenanceType">Activity *</label><select id="maintenanceType" required><option>Inspection</option><option>Repair</option><option>Cleaning / servicing</option><option>Replacement</option><option>Other</option></select></div>
+<div class="field"><label for="maintenanceBy">Recorded by</label><input id="maintenanceBy" placeholder="Name / committee role"></div>
+<div class="field full"><label for="maintenanceDetails">Details / action taken *</label><textarea id="maintenanceDetails" required placeholder="Describe the issue, work completed and any follow-up required"></textarea></div>
+</div></div><div class="modal-foot"><button type="button" class="btn btn-light" data-close="maintenanceModal">Cancel</button><button class="btn btn-primary" type="submit">Save entry</button></div></form></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='stGeorgeAssetRegister_v1', LOGKEY='stGeorgeMaintenanceLog_v1';
+let assets=JSON.parse(localStorage.getItem(KEY)||'[]'), logs=JSON.parse(localStorage.getItem(LOGKEY)||'[]');
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toLocaleString('en-KE',{maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=> 'SG-'+Date.now().toString().slice(-8)+'-'+Math.random().toString(36).slice(2,5).toUpperCase();
+function save(){localStorage.setItem(KEY,JSON.stringify(assets));localStorage.setItem(LOGKEY,JSON.stringify(logs));render()}
+function badgeClass(v){return v==='Good'?'good':v==='Fair'?'fair':v==='Poor'?'poor':v==='Available'?'available':v==='Assigned'?'assigned':v==='Under repair'?'repair':'retired'}
+function iconFor(cat){return ({'Audio & visual':'🎙️','Furniture':'🪑','Electronics':'💻','Sports & recreation':'⚽','Kitchen & catering':'🍽️','Other':'📦'})[cat]||'📦'}
+function render(){
+ $('totalAssets').textContent=assets.length;$('availableAssets').textContent=assets.filter(a=>a.status==='Available').length;$('assignedAssets').textContent=assets.filter(a=>a.status==='Assigned').length;$('attentionAssets').textContent=assets.filter(a=>a.status==='Under repair'||a.condition==='Poor').length;
+ $('totalValue').textContent=money(assets.reduce((s,a)=>s+Number(a.value||0),0));$('categoryCount').textContent=new Set(assets.map(a=>a.category)).size;$('maintenanceCount').textContent=logs.length;$('retiredCount').textContent=assets.filter(a=>a.status==='Retired').length;
+ const q=$('searchInput').value.toLowerCase(),cat=$('categoryFilter').value,st=$('statusFilter').value;
+ const filtered=assets.filter(a=>(!q||[a.name,a.id,a.custodian,a.location,a.notes].join(' ').toLowerCase().includes(q))&&(!cat||a.category===cat)&&(!st||a.status===st));
+ $('assetRows').innerHTML=filtered.map(a=>`<tr><td><div class="asset-cell"><div class="asset-thumb">${iconFor(a.category)}</div><div><div class="asset-name">${esc(a.name)}</div><div class="asset-id">${esc(a.id)}</div></div></div></td><td class="category">${esc(a.category)}</td><td class="location">${esc(a.location||'—')}</td><td>${esc(a.custodian||'—')}</td><td><span class="badge ${badgeClass(a.condition)}">${esc(a.condition)}</span></td><td><span class="badge ${badgeClass(a.status)}">${esc(a.status)}</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit asset" onclick="editAsset('${a.id}')">✎</button><button class="icon-btn" title="Delete asset" onclick="deleteAsset('${a.id}')">×</button></div></td></tr>`).join('');
+ $('emptyState').hidden=filtered.length>0;$('recordCount').textContent=`Showing ${filtered.length} of ${assets.length} records`;
+ $('maintenanceRows').innerHTML=logs.slice().reverse().map(l=>`<tr><td>${esc(l.date)}</td><td><b>${esc(l.assetName)}</b><div class="asset-id">${esc(l.assetId)}</div></td><td>${esc(l.type)}<div class="asset-id">${esc(l.details)}</div></td><td>${esc(l.by||'—')}</td><td>${money(l.cost)}</td></tr>`).join('');
+ $('maintenanceEmpty').style.display=logs.length?'none':'block';
+ $('maintenanceAsset').innerHTML=assets.filter(a=>a.status!=='Retired').map(a=>`<option value="${esc(a.id)}">${esc(a.name)} (${esc(a.id)})</option>`).join('');
+}
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function editAsset(id){
+ const a=assets.find(x=>x.id===id);if(!a)return;
+ $('assetModalTitle').textContent='Edit asset';$('editId').value=a.id;$('assetName').value=a.name;$('assetCategory').value=a.category;$('assetLocation').value=a.location||'';$('assetCustodian').value=a.custodian||'';$('assetCondition').value=a.condition;$('assetStatus').value=a.status;$('assetDate').value=a.date||'';$('assetValue').value=a.value||'';$('assetNotes').value=a.notes||'';openModal('assetModal');
+}
+function deleteAsset(id){const a=assets.find(x=>x.id===id);if(!a)return;if(!confirm(`Delete "${a.name}" from the register? This cannot be undone.`))return;assets=assets.filter(x=>x.id!==id);save();toast('Asset deleted')}
+$('addAssetBtn').onclick=()=>{$('assetForm').reset();$('editId').value='';$('assetModalTitle').textContent='Add an asset';openModal('assetModal')};
+$('assetForm').onsubmit=e=>{e.preventDefault();const id=$('editId').value||uid(),old=assets.find(a=>a.id===id);const a={id,name:$('assetName').value.trim(),category:$('assetCategory').value,location:$('assetLocation').value.trim(),custodian:$('assetCustodian').value.trim(),condition:$('assetCondition').value,status:$('assetStatus').value,date:$('assetDate').value,value:Number($('assetValue').value||0),notes:$('assetNotes').value.trim()};if(old)assets=assets.map(x=>x.id===id?a:x);else assets.push(a);save();closeModal('assetModal');toast(old?'Asset updated':'Asset added to register')};
+$('addMaintenanceBtn').onclick=()=>{if(!assets.length){toast('Add an asset before logging maintenance');return}$('maintenanceForm').reset();$('maintenanceDate').value=new Date().toISOString().slice(0,10);openModal('maintenanceModal')};
+$('maintenanceForm').onsubmit=e=>{e.preventDefault();const a=assets.find(x=>x.id===$('maintenanceAsset').value);if(!a)return;logs.push({assetId:a.id,assetName:a.name,date:$('maintenanceDate').value,cost:Number($('maintenanceCost').value||0),type:$('maintenanceType').value,by:$('maintenanceBy').value.trim(),details:$('maintenanceDetails').value.trim()});save();closeModal('maintenanceModal');toast('Maintenance entry saved')};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
+['searchInput','categoryFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',render));
+function csv(rows){return rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')}
+function download(name,rows){const blob=new Blob(['\ufeff'+csv(rows)],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+function exportAssets(){download('st-george-asset-register.csv',[['Asset ID','Asset name','Category','Location','Custodian','Condition','Status','Acquisition date','Value KSh','Notes'],...assets.map(a=>[a.id,a.name,a.category,a.location,a.custodian,a.condition,a.status,a.date,a.value,a.notes])]);toast('Asset register exported')}
+function exportLogs(){download('st-george-maintenance-log.csv',[['Date','Asset ID','Asset name','Activity','Details','Recorded by','Cost KSh'],...logs.map(l=>[l.date,l.assetId,l.assetName,l.type,l.details,l.by,l.cost])]);toast('Maintenance log exported')}
+$('exportBtn').onclick=exportAssets;$('reportAssetExport').onclick=exportAssets;$('reportMaintenanceExport').onclick=exportLogs;
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));$('crumb').textContent=b.textContent.trim();$('sidebar').classList.remove('open');});
+$('menuBtn').onclick=()=>$('sidebar').classList.toggle('open');
+render();
+</script>
+</body>
+</html>
