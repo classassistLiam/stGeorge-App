@@ -1,18 +1,36 @@
+
 {
-  "name": "St George Youth Community Hub",
+  "id": "./",
+  "name": "St George Youth Fellowship",
   "short_name": "St George Youth",
+  "description": "The digital home of St George Youth Fellowship.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#f6f9f5",
   "theme_color": "#176b38",
-  "description": "Youth fellowship, community, games and ministry tools",
+  "categories": [
+    "education",
+    "social",
+    "lifestyle"
+  ],
   "icons": [
     {
-      "src": "./assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
