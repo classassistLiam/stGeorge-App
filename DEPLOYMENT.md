@@ -1,43 +1,34 @@
-# St George Youth Upgrade Pack — Deployment Guide
+# St George Youth — Design & PWA Upgrade
 
-## What this ZIP does
-- Adds a responsive four-page PWA shell and shared navigation.
-- Preserves recovered management, community, Snake and racing HTML as original modules.
-- Adds manifest, SVG icon, service worker, install prompt and mobile navigation.
-- Shell files use relative URLs and can be hosted on GitHub Pages.
+## What changed
+- Reworked the home page into a public-facing landing page plus a clear four-module youth hub.
+- Added a polished responsive visual system: forest green, warm ivory, soft lime and restrained gold; mobile bottom navigation; reduced-motion and keyboard-focus support.
+- Kept the existing module destinations and original HTML files intact.
+- Corrected the install controller to register the actual `sw.js` filename (the previous controller registered `sw.js` only in the latest pack's intended setup; confirm this matches the deployed file).
+- Improved offline caching so an unavailable optional file does not prevent the service worker from installing.
+- Added update detection without forcibly refreshing a page or interrupting work.
 
-## Important honest status
-This is a source-preserving integration package, not a certified production backend. The recovered management/community modules still use their original API settings and local/device behaviors. The shell cannot make member data portable by itself. No secure election backend or KinTrack location integration is activated by this ZIP. Those require the Apps Script project, spreadsheet schema, authorization model, and live deployment tests.
+## Preserved modules
+- `management-original.html`
+- `community-original.html`
+- `snake-original.html`
+- `racing-original.html`
 
-## Publish to GitHub Pages
-1. Back up the current repository and branch before replacing anything.
-2. Unzip this folder and review `SOURCE_AUDIT.md`.
-3. Upload the package contents to a dedicated test branch or separate repository first.
-4. In GitHub: Settings → Pages → deploy from branch; select `main` and `/ (root)`.
-5. Wait for Pages build, then open the URL over HTTPS.
-6. On Android: Chrome menu → Install app / Add to Home screen. On iOS: Safari → Share → Add to Home Screen.
-7. Verify each module on desktop and phone; test offline after the first successful load.
+The wrappers `page1.html`, `page2.html`, and `page3.html` continue to open those originals. Their backend logic, data keys, event handlers and game mechanics were not rewritten.
 
-## Files
-- `index.html`: cover / navigation
-- `page1.html`: management wrapper
-- `page2.html`: community wrapper
-- `page3.html`: games launcher
-- `management-original.html`, `community-original.html`, `snake-original.html`, `racing-original.html`: recovered originals
-- `css/styles.css`, `js/app.js`, `manifest.json`, `sw.js`: PWA shell
+## Important limitations
+This is a front-end design/PWA-shell upgrade. It does not make local/device data cloud-synchronised, authenticate members, secure elections, or add new Apps Script endpoints. The source audit notes previous API authorization/CORS issues; verify the deployed Apps Script web app separately.
 
-## Next backend phase (required for portability/security)
-- Create Apps Script Web App endpoints with authentication and role checks.
-- Establish canonical MemberID, central member/attendance/event/chat/status schemas.
-- Add device-safe export/restore and cloud backup with versioned schema.
-- Implement server-side election eligibility, duplicate-vote prevention (LockService), closed/open states and audit records. Secret ballots must separate identity eligibility from ballot contents.
-- Upload media to Drive with access controls; store metadata/file IDs, not blobs in Sheets.
-- Add opt-in, time-limited missionary location-sharing with visible active state, access restrictions, and automatic stop; asset records with QR labels and custody history.
+The management and community modules are preserved as recovered in this ZIP. The `SOURCE_AUDIT.md` identifies newer live GitHub files that are larger/different from some recovered copies. Before replacing the production repository, compare the current remote versions and merge carefully.
 
-## Test checklist
-- All 4 shell pages load; navigation works.
-- Original management/community pages open from wrappers and direct links.
-- Snake touch/keyboard and racing controls tested.
-- Install on Android/iOS; safe-area layouts.
-- Load once, airplane mode, verify shell and cached modules.
-- Verify API/auth failures are visible; never assume cloud sync.
+## Publish safely
+1. Keep a backup of the current production repository.
+2. Upload this package to a separate test branch first.
+3. Check that all four module pages load and test registration, finance, attendance, calendar, chat, status, and both games.
+4. Test on a phone and desktop. Check browser console/network errors.
+5. Confirm the service worker controls the site after a second visit.
+6. Load once, go offline, and verify the shell and cached modules open.
+7. Only merge to `main` after confirming backend-dependent actions still work.
+
+## GitHub Pages
+Set GitHub Pages to deploy from the chosen branch and `/ (root)`. The app requires HTTPS for service worker and install support.
