@@ -689,6 +689,210 @@ textarea:focus-visible {
    REDUCED MOTION
 ========================================================= */
 
+/* ==========================================
+   ST GEORGE — SIGNATURE FEATURE COLLECTION
+========================================== */
+
+.grid {
+  max-width: 1240px;
+  padding: 28px 24px 85px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.grid .card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  min-height: 355px;
+  padding: 30px 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  background: #fff;
+  border: 1px solid #e7eee7;
+  border-radius: 23px;
+
+  box-shadow: 0 8px 30px rgba(20, 65, 37, .035);
+
+  transition:
+    transform .3s ease,
+    box-shadow .3s ease,
+    border-color .3s ease;
+}
+
+/* Decorative background element */
+
+.grid .card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+
+  width: 210px;
+  height: 210px;
+  right: -85px;
+  top: -95px;
+
+  border-radius: 50%;
+  background: #f1f7ee;
+
+  transition: transform .45s ease;
+}
+
+.grid .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(20, 65, 37, .09);
+  border-color: #d6e7d3;
+}
+
+.grid .card:hover::before {
+  transform: scale(1.35);
+}
+
+.card-topline {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.card-index {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .15em;
+  color: #78867a;
+}
+
+.card-symbol {
+  color: #c5a253;
+  font-size: 1.15rem;
+}
+
+.grid .card .icon {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+
+  border-radius: 19px;
+  background: #edf6e9;
+  border: 1px solid #e3efdd;
+
+  font-size: 1.8rem;
+  margin-bottom: 17px;
+}
+
+.grid .card h2 {
+  color: #153d28;
+  font-size: clamp(1.55rem, 2.5vw, 2rem);
+  line-height: 1.14;
+  letter-spacing: -.055em;
+  font-weight: 800;
+
+  margin: 0 0 13px;
+}
+
+.grid .card p {
+  color: #6a786f;
+  font-size: .91rem;
+  line-height: 1.85;
+  max-width: 480px;
+  margin: 0 0 24px;
+}
+
+.grid .card .cta {
+  margin-top: auto;
+  padding: 0;
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  color: #176b38;
+  font-size: .88rem;
+  font-weight: 800;
+}
+
+.grid .card .cta span {
+  font-size: 1.15rem;
+  transition: transform .25s ease;
+}
+
+.grid .card .cta:hover {
+  background: transparent;
+  color: #104c2b;
+  transform: none;
+}
+
+.grid .card .cta:hover span {
+  transform: translate(4px, -3px);
+}
+
+/* Individual identity */
+
+.ministry-card::before {
+  background: #edf6e9 !important;
+}
+
+.community-card::before {
+  background: #eef5f4 !important;
+}
+
+.games-card::before {
+  background: #f5f3e9 !important;
+}
+
+.resources-card::before {
+  background: #f0f2f8 !important;
+}
+
+/* Responsive layout */
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+    padding: 18px 17px 100px;
+    gap: 16px;
+  }
+
+  .grid .card {
+    min-height: 325px;
+    padding: 25px;
+    border-radius: 21px;
+  }
+
+  .card-topline {
+    margin-bottom: 22px;
+  }
+
+  .grid .card h2 {
+    font-size: 1.75rem;
+  }
+
+  .grid .card p {
+    font-size: .9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid .card,
+  .grid .card::before,
+  .grid .card .cta span {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
