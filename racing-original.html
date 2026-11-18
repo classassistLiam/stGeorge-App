@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#061b2b">
+<title>St. George Youth | Road to Greatness</title>
+<style>
+:root{--navy:#061b2b;--blue:#0878e8;--cyan:#39e7ff;--gold:#ffd166;--green:#22c55e;--white:#f5fbff;--muted:#a9c1d2;--panel:#0b2b40}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#174b68 0,#071d2e 48%,#030d18 100%);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+button{font:inherit;cursor:pointer} .wrap{max-width:1150px;margin:auto;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}.crest{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#19bd85,#0878e8);font-size:25px;box-shadow:0 0 24px #0878e855}
+h1{font-size:clamp(1.25rem,3vw,2rem);margin:0;letter-spacing:.02em}.sub{color:var(--muted);font-size:.9rem;margin-top:3px}
+.pill{border:1px solid #3c718d;border-radius:99px;padding:8px 12px;color:#c7f9ff;background:#09273a;font-size:.8rem}
+.hero{border:1px solid #1b5b79;border-radius:22px;padding:clamp(16px,3vw,28px);background:linear-gradient(120deg,#0b3148ed,#071d2eea);box-shadow:0 18px 60px #0005;display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:center}
+.eyebrow{color:var(--gold);text-transform:uppercase;font-weight:800;font-size:.75rem;letter-spacing:.16em}
+.hero h2{font-size:clamp(1.65rem,4vw,3.1rem);line-height:1.05;margin:10px 0}.hero p{color:#c4d9e6;line-height:1.65;margin:0 0 18px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#041724;border:1px solid #1e526c;padding:10px 13px;border-radius:13px;min-width:95px}.stat strong{display:block;font-size:1.15rem}.stat span{font-size:.72rem;color:var(--muted)}
+.track-card{background:#061927;border:1px solid #2b6887;border-radius:18px;padding:16px;position:relative;overflow:hidden}.track-card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#1ad4ff12,transparent 55%);pointer-events:none}
+.track-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.85rem;color:#c9e9f7}
+.game{position:relative;height:350px;max-height:52vh;min-height:270px;border-radius:14px;overflow:hidden;background:#153c35;border:2px solid #277a8b;touch-action:manipulation}
+.road{position:absolute;left:21%;width:58%;height:100%;top:0;background:linear-gradient(90deg,#d7e4df 0 2%,#313c4a 2% 98%,#d7e4df 98%);overflow:hidden}
+.road:before,.road:after{content:"";position:absolute;top:-80%;height:260%;width:4px;background:repeating-linear-gradient(to bottom,#e9f6ff 0 22px,transparent 22px 43px);animation:roadMove .7s linear infinite}
+.road:before{left:50%;transform:translateX(-50%)}.road:after{left:25%;opacity:.12}
+@keyframes roadMove{to{background-position:0 43px}}
+.grass{position:absolute;inset:0;background:repeating-linear-gradient(0deg,#176c3c 0 18px,#1c7c45 18px 37px);opacity:.9}
+.trees{position:absolute;top:0;bottom:0;width:20%;background:radial-gradient(circle at 30% 20%,#47b65d 0 7px,transparent 8px),radial-gradient(circle at 68% 38%,#0e5934 0 11px,transparent 12px),radial-gradient(circle at 40% 60%,#43a94f 0 9px,transparent 10px),radial-gradient(circle at 65% 82%,#0c5532 0 12px,transparent 13px);background-size:60px 100px}
+.trees.left{left:0}.trees.right{right:0}
+.car{position:absolute;z-index:3;width:34px;height:55px;border-radius:10px 10px 7px 7px;border:2px solid #ffd8b2;background:linear-gradient(90deg,#f04a2f,#ff220b,#b70f0b);box-shadow:0 0 12px #ff4c26aa;left:calc(50% - 17px);bottom:13px;transition:left .12s,background .15s}
+.car:before{content:"";position:absolute;top:9px;left:5px;right:5px;height:15px;border-radius:5px 5px 2px 2px;background:linear-gradient(#a7efff,#23759a);border:1px solid #e6ffff}
+.car:after{content:"";position:absolute;left:-5px;right:-5px;bottom:7px;height:8px;border-left:4px solid #121c26;border-right:4px solid #121c26}
+.obstacle{position:absolute;z-index:2;width:31px;height:48px;border-radius:8px;background:linear-gradient(90deg,#0878e8,#43d8ff,#0752b0);border:2px solid #d8f8ff;box-shadow:0 0 12px #2dd4ff77;display:none}
+.obstacle:before{content:"";position:absolute;top:8px;left:4px;right:4px;height:12px;background:#173f58;border-radius:3px}
+.hud{position:absolute;z-index:5;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;gap:6px;font-size:.8rem;font-weight:800;text-shadow:0 2px 4px #000;background:#001b2ab0;border:1px solid #ffffff24;border-radius:8px;padding:7px}
+.overlay{position:absolute;z-index:6;inset:0;background:#031522c9;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:18px}
+.overlay h3{font-size:1.5rem;margin:0 0 8px}.overlay p{max-width:300px;color:#d2e7f2;font-size:.9rem;line-height:1.5;margin:0 0 15px}
+.primary{border:0;border-radius:11px;padding:11px 17px;background:linear-gradient(120deg,#1ad49a,#0b8de8);color:#001b2a;font-weight:900;box-shadow:0 7px 18px #0087bb44}.secondary{border:1px solid #32708b;background:#0a2a3e;color:#e8f8ff;border-radius:10px;padding:9px 12px;font-weight:750}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.controls button{min-height:48px;font-size:1.2rem}.controls .go{font-size:.8rem}
+.game-note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:8px}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel{border:1px solid #1d526d;background:#082439;border-radius:18px;padding:18px}.panel h3{margin:0 0 10px;font-size:1.1rem}.verse{font-size:1.08rem;line-height:1.6;color:#f4fbff}.ref{color:var(--gold);font-weight:800;font-size:.85rem;margin-top:9px}.verse-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.mission{color:#c3dbe8;line-height:1.6;font-size:.9rem}.mission strong{color:#fff}.progress{height:7px;background:#153e52;border-radius:99px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#20d49a,#37d8ff);transition:width .3s}
+footer{text-align:center;color:#7897aa;font-size:.76rem;padding:22px 5px 8px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.lower{grid-template-columns:1fr}.game{height:330px}.wrap{padding:12px}.pill{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><div class="crest">✝</div><div><h1>ST. GEORGE YOUTH</h1><div class="sub">Road to Greatness · Play fair. Grow strong. Keep the faith.</div></div></div>
+  <div class="pill">🏁 YOUTH FUN ZONE · OFFLINE READY</div>
+</header>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Faith • Focus • Forward</div>
+    <h2>Keep your eyes on the road to greatness.</h2>
+    <p>Take a quick racing break between fellowship moments. Dodge traffic, collect points, and remember: discipline in the little things prepares us for bigger things.</p>
+    <div class="stats">
+      <div class="stat"><strong id="best">0</strong><span>BEST SCORE</span></div>
+      <div class="stat"><strong id="runs">0</strong><span>RACES PLAYED</span></div>
+      <div class="stat"><strong>🏆</strong><span>PLAY WITH PURPOSE</span></div>
+    </div>
+  </div>
+  <div class="track-card">
+    <div class="track-head"><strong>🏎️ ST. GEORGE SPEEDWAY</strong><span id="stateLabel">READY</span></div>
+    <div class="game" id="game" aria-label="2D racing game">
+      <div class="grass"></div><div class="trees left"></div><div class="trees right"></div><div class="road"></div>
+      <div class="hud"><span> SCORE: <b id="score">0</b></span><span>LEVEL <b id="level">1</b></span><span>❤️ <b id="lives">3</b></span></div>
+      <div class="car" id="car"></div><div class="obstacle" id="obstacle"></div>
+      <div class="overlay" id="overlay"><h3>Ready, driver?</h3><p>Use the arrows or A / D keys. On a phone, tap the left and right controls. Avoid the blue cars and chase your personal best.</p><button class="primary" id="startBtn">START RACE ▶</button></div>
+    </div>
+    <div class="controls">
+      <button class="secondary" id="leftBtn" aria-label="Move left">⬅️</button>
+      <button class="primary go" id="pauseBtn">PAUSE ⏸</button>
+      <button class="secondary" id="rightBtn" aria-label="Move right">➡️</button>
+    </div>
+    <div class="game-note">Keyboard: ← → or A / D · Mobile: use arrow buttons · No downloads or internet needed</div>
+  </div>
+</section>
+<section class="lower">
+  <div class="panel">
+    <h3>📖 Pit Stop: Word of Encouragement</h3>
+    <div class="verse" id="verse">“Let us run with perseverance the race marked out for us.”</div>
+    <div class="ref" id="reference">Hebrews 12:1</div>
+    <div class="verse-actions"><button class="secondary" id="nextVerse">Next verse ✨</button><button class="secondary" id="shareVerse">Share encouragement ↗</button></div>
+  </div>
+  <div class="panel">
+    <h3>🎯 Today's Youth Mission</h3>
+    <div class="mission"><strong>Play with purpose.</strong><br>Enjoy the game, then bring that same focus to your goals, your studies, your service, and the way you encourage one another. Keep the fun friendly—make room for everyone.</div>
+    <div class="progress"><span id="progressBar"></span></div>
+    <div class="mission" id="missionText">Finish one race to unlock your first badge.</div>
+    <div style="margin-top:13px"><button class="secondary" id="resetBtn">Reset game stats</button></div>
+  </div>
+</section>
+<footer>Made for St. George Youth fellowship · A small game break, a stronger purpose. Play responsibly and stay present during fellowship.</footer>
+</div>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const car=$('car'), obs=$('obstacle'), game=$('game'), overlay=$('overlay');
+ const lanes=[30,50,70]; let lane=1,score=0,lives=3,running=false,paused=false,obsY=-70,last=0,spawn=0,anim=0,runCount=0;
+ let best=0; try{best=Number(localStorage.getItem('sgy-best')||0);runCount=Number(localStorage.getItem('sgy-runs')||0)}catch(e){}
+ $('best').textContent=best; $('runs').textContent=runCount;
+ const verses=[
+  ['“Let us run with perseverance the race marked out for us.”','Hebrews 12:1'],
+  ['“I can do all things through Christ who strengthens me.”','Philippians 4:13'],
+  ['“Whatever you do, work at it with all your heart.”','Colossians 3:23'],
+  ['“Be strong and courageous. Do not be afraid.”','Joshua 1:9'],
+  ['“Let no one despise you for your youth, but set the believers an example.”','1 Timothy 4:12'],
+  ['“Do not grow weary in doing good.”','Galatians 6:9'],
+  ['“Trust in the Lord with all your heart.”','Proverbs 3:5'],
+  ['“Encourage one another and build each other up.”','1 Thessalonians 5:11']
+ ]; let vi=0;
+ function showVerse(){ $('verse').textContent=verses[vi][0];$('reference').textContent=verses[vi][1] }
+ function positionCar(){car.style.left=`calc(${lanes[lane]}% - 17px)`}
+ function updateHUD(){ $('score').textContent=score;$('lives').textContent=lives;$('level').textContent=Math.min(9,1+Math.floor(score/10));$('best').textContent=best }
+ function move(d){if(!running||paused)return;lane=Math.max(0,Math.min(2,lane+d));positionCar()}
+ function resetRun(){lane=1;score=0;lives=3;obsY=-70;spawn=0;obs.style.display='none';positionCar();updateHUD()}
+ function start(){cancelAnimationFrame(anim);resetRun();running=true;paused=false;overlay.style.display='none';$('stateLabel').textContent='RACING';$('pauseBtn').textContent='PAUSE ⏸';last=performance.now();anim=requestAnimationFrame(loop)}
+ function finish(){running=false;paused=false;cancelAnimationFrame(anim);runCount++;if(score>best)best=score;try{localStorage.setItem('sgy-best',best);localStorage.setItem('sgy-runs',runCount)}catch(e){}$('best').textContent=best;$('runs').textContent=runCount; $('stateLabel').textContent='FINISHED';$('progressBar').style.width=Math.min(100,runCount*20)+'%';$('missionText').textContent=runCount>=5?'🏅 Road Warrior badge unlocked! Five races completed.':`Race complete! ${5-runCount} more race${5-runCount===1?'':'s'} to unlock the Road Warrior badge.`;overlay.innerHTML=`<h3>${lives===0?'Race Over!':'Race Paused'}</h3><p>You scored <strong>${score}</strong> points. ${score>=best?'Keep building your personal best!':'Every try is practice—go again!'}</p><button class="primary" id="againBtn">RACE AGAIN ↻</button>`;overlay.style.display='flex';$('againBtn').addEventListener('click',start)}
+ function loop(now){if(!running||paused)return;let dt=Math.min(40,now-last);last=now;let speed=2.1+Math.min(5,score*.07);obsY+=speed*dt/16.7;spawn+=dt;
+  if(obs.style.display==='none'&&spawn>Math.max(520,1150-score*7)){spawn=0;obsY=-60;obs.style.display='block';obs.style.left=`calc(${lanes[Math.floor(Math.random()*3)]}% - 15px)`;obs.style.top=obsY+'px'}
+  if(obs.style.display==='block'){obs.style.top=obsY+'px';if(obsY>game.clientHeight){obs.style.display='none';score++;updateHUD()}const obRect=obs.getBoundingClientRect(),carRect=car.getBoundingClientRect();if(obRect.bottom>carRect.top+7&&obRect.top<carRect.bottom-5&&obRect.right>carRect.left+5&&obRect.left<carRect.right-5){obs.style.display='none';lives--;updateHUD();if(lives<=0){finish();return}}}
+  anim=requestAnimationFrame(loop)
+ }
+ function togglePause(){if(!running)return;if(!paused){paused=true;cancelAnimationFrame(anim);$('pauseBtn').textContent='RESUME ▶';$('stateLabel').textContent='PAUSED';overlay.innerHTML='<h3>Quick pit stop</h3><p>Take a breath. Ready to get back on the road?</p><button class="primary" id="resumeBtn">RESUME RACE ▶</button>';overlay.style.display='flex';$('resumeBtn').addEventListener('click',()=>{paused=false;overlay.style.display='none';$('pauseBtn').textContent='PAUSE ⏸';$('stateLabel').textContent='RACING';last=performance.now();anim=requestAnimationFrame(loop)})}else{paused=false;overlay.style.display='none';last=performance.now();anim=requestAnimationFrame(loop)}}
+ $('startBtn').addEventListener('click',start);$('leftBtn').addEventListener('click',()=>move(-1));$('rightBtn').addEventListener('click',()=>move(1));$('pauseBtn').addEventListener('click',togglePause);
+ document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','a','A','d','D',' '].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1);if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1);if(e.key===' '&&running)togglePause();if((e.key==='Enter')&&!running)start()});
+ $('nextVerse').addEventListener('click',()=>{vi=(vi+1)%verses.length;showVerse()});
+ $('shareVerse').addEventListener('click',async()=>{const text=verses[vi][0]+' — '+verses[vi][1]+' | St. George Youth';try{if(navigator.share)await navigator.share({text});else if(navigator.clipboard){await navigator.clipboard.writeText(text);$('shareVerse').textContent='Copied ✓';setTimeout(()=>$('shareVerse').textContent='Share encouragement ↗',1500)}else alert(text)}catch(e){}});
+ $('resetBtn').addEventListener('click',()=>{if(confirm('Reset saved best score and race count on this device?')){best=0;runCount=0;try{localStorage.removeItem('sgy-best');localStorage.removeItem('sgy-runs')}catch(e){}$('best').textContent=0;$('runs').textContent=0;$('progressBar').style.width='0%';$('missionText').textContent='Finish one race to unlock your first badge.'}});
+ showVerse();
+})();
+</script>
+</body>
+</html>

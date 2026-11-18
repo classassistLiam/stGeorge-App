@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#075e43">
+<title>St George Youth | Community</title>
+<style>
+:root{
+ --green:#075e43;--emerald:#128c63;--mint:#e8f6ef;
+ --paper:#f3f7f4;--white:#fff;--ink:#18352a;
+ --muted:#82938a;--line:#e6eee8;--gold:#d9b45b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:15px/1.5 Arial, sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:1450px;margin:auto;min-height:100vh;display:grid;
+ grid-template-columns:280px 1fr;background:white}
+.sidebar{background:var(--green);color:white;padding:25px 18px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.logo{width:46px;height:46px;border-radius:15px;background:white;
+ color:var(--green);display:grid;place-items:center;font-weight:900;font-size:20px}
+.brand h2{font-size:17px;margin:0}
+.brand small{opacity:.7}
+.profile{padding:15px;background:#ffffff15;border-radius:15px;margin-bottom:25px}
+.profile strong{display:block}
+.profile small{opacity:.7}
+.nav-label{font-size:11px;letter-spacing:1.5px;opacity:.55;margin:22px 10px 10px}
+.nav button{width:100%;border:0;background:transparent;color:#ffffffc9;
+ text-align:left;padding:13px;border-radius:10px;margin:3px 0}
+.nav button.active,.nav button:hover{background:#ffffff20;color:white}
+.sidebar-footer{margin-top:45px;font-size:12px;opacity:.65}
+.main{min-width:0;background:#fff}
+.topbar{height:75px;border-bottom:1px solid var(--line);padding:0 28px;
+ display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:19px;margin:0}
+.online{font-size:12px;color:var(--emerald)}
+.content{padding:24px 28px}
+.section-title{display:flex;justify-content:space-between;align-items:center;
+ margin-bottom:14px}
+.section-title h3{font-size:16px;margin:0}
+.section-title small{color:var(--muted)}
+.stories{display:flex;gap:18px;overflow-x:auto;padding:8px 2px 20px}
+.story{border:0;background:none;min-width:68px;text-align:center;color:var(--ink)}
+.story-ring{width:58px;height:58px;border-radius:50%;padding:3px;
+ border:2px solid var(--emerald);margin:auto auto 6px}
+.story-ring img,.story-ring .initial{width:100%;height:100%;border-radius:50%;
+ object-fit:cover;background:var(--mint);display:grid;place-items:center;
+ font-weight:bold;color:var(--green)}
+.story small{font-size:11px;display:block;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;max-width:72px}
+.add-story .story-ring{border:2px dashed var(--emerald)}
+.add-story .initial{font-size:25px}
+.chat-layout{display:grid;grid-template-columns:250px 1fr;gap:18px;
+ min-height:510px;border:1px solid var(--line);border-radius:17px;overflow:hidden}
+.chat-list{border-right:1px solid var(--line);padding:16px}
+.chat-list h3{font-size:15px;margin:0 0 14px}
+.room{background:var(--mint);border-radius:12px;padding:13px;
+ display:flex;gap:10px;align-items:center}
+.room-icon{width:39px;height:39px;border-radius:12px;background:var(--green);
+ color:white;display:grid;place-items:center;font-size:18px}
+.room strong{font-size:13px;display:block}
+.room small{font-size:11px;color:var(--muted)}
+.chat-panel{display:flex;flex-direction:column;min-width:0}
+.chat-heading{padding:15px 18px;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;gap:10px}
+.chat-heading strong{font-size:14px}
+.chat-heading small{display:block;color:var(--muted);font-size:11px}
+.messages{padding:18px;flex:1;min-height:300px;max-height:450px;
+ overflow-y:auto;background:#f8fbf9}
+.message{max-width:78%;margin:0 0 13px}
+.message.mine{margin-left:auto}
+.sender{font-size:11px;color:var(--emerald);font-weight:bold;margin:0 0 4px 5px}
+.bubble{background:white;border:1px solid var(--line);border-radius:4px 14px 14px 14px;
+ padding:10px 13px;overflow-wrap:anywhere;box-shadow:0 2px 5px #18352a08}
+.mine .bubble{background:#e5f6eb;border-color:#d8eddf;border-radius:14px 4px 14px 14px}
+.time{font-size:10px;color:var(--muted);text-align:right;margin-top:4px}
+.composer{display:flex;gap:9px;padding:14px;border-top:1px solid var(--line)}
+.composer input{flex:1;min-width:0;border:1px solid var(--line);
+ border-radius:25px;padding:12px 16px;outline:none}
+.composer input:focus{border-color:var(--emerald)}
+.send{border:0;border-radius:50%;width:44px;height:44px;background:var(--green);
+ color:white;font-size:18px}
+.statusbar{margin-top:18px;padding:14px 16px;background:#fbfdfb;
+ border:1px solid var(--line);border-radius:13px;font-size:12px;color:var(--muted)}
+.notice{padding:10px 13px;border-radius:10px;background:var(--mint);
+ color:var(--green);font-size:12px;margin:12px 0;display:none}
+.modal{position:fixed;inset:0;background:#071b13c9;display:none;
+ align-items:center;justify-content:center;padding:18px;z-index:5}
+.modal.show{display:flex}
+.modal-card{background:white;border-radius:18px;padding:22px;width:min(420px,100%)}
+.modal-card h3{margin-top:0}
+.modal-card input{width:100%;padding:12px;border:1px solid var(--line);
+ border-radius:10px;margin:8px 0 15px}
+.primary{background:var(--green);color:white;border:0;padding:11px 17px;
+ border-radius:10px}
+.secondary{background:#edf4ef;color:var(--green);border:0;
+ padding:11px 17px;border-radius:10px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.viewer{max-width:480px;width:100%;background:#10291f;color:white;
+ border-radius:18px;padding:20px;text-align:center}
+.viewer img,.viewer video{max-width:100%;max-height:65vh;border-radius:12px}
+.viewer button{margin-top:15px}
+@media(max-width:760px){
+ .app{display:block}
+ .sidebar{padding:13px 15px}
+ .brand{margin:0}
+ .brand .logo{width:39px;height:39px}
+ .profile,.nav-label,.sidebar-footer{display:none}
+ .nav{display:flex;gap:5px;margin-top:12px;overflow-x:auto}
+ .nav button{white-space:nowrap;width:auto;padding:8px 12px;font-size:12px}
+ .topbar{height:60px;padding:0 17px}
+ .content{padding:17px 13px}
+ .chat-layout{grid-template-columns:1fr}
+ .chat-list{display:none}
+ .messages{min-height:340px}
+ .message{max-width:88%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand">
+  <div class="logo">SG</div>
+  <div><h2>ST. GEORGE YOUTH</h2><small>Faith • Fellowship • Community</small></div>
+ </div>
+ <div class="profile">
+  <strong id="profileName">Community Member</strong>
+  <small>Welcome to the fellowship</small>
+ </div>
+ <div class="nav-label">COMMUNITY</div>
+ <nav class="nav">
+  <button class="active" onclick="showSection('community',this)">◉ Community</button>
+  <button onclick="showSection('community',this)">◎ Status updates</button>
+  <button onclick="editName()">♙ My profile</button>
+ </nav>
+ <div class="sidebar-footer">Together in faith, service and fellowship.<br><br>St George Youth © 2026</div>
+</aside>
+
+<main class="main">
+ <header class="topbar">
+  <h1>Community Hub</h1>
+  <span class="online" id="connection">● Connecting…</span>
+ </header>
+
+ <div class="content">
+  <section>
+   <div class="section-title">
+    <h3>Fellowship updates</h3>
+    <small>Stories from our youth</small>
+   </div>
+   <div class="stories" id="stories">
+    <button class="story add-story" onclick="openStatusForm()">
+     <div class="story-ring"><div class="initial">+</div></div>
+     <small>My status</small>
+    </button>
+   </div>
+  </section>
+
+  <section>
+   <div class="section-title">
+    <h3>Community conversation</h3>
+    <small>General fellowship</small>
+   </div>
+   <div class="chat-layout">
+    <div class="chat-list">
+     <h3>Conversations</h3>
+     <div class="room">
+      <div class="room-icon">✦</div>
+      <div><strong>General fellowship</strong><small>Community chat</small></div>
+     </div>
+    </div>
+    <div class="chat-panel">
+     <div class="chat-heading">
+      <div class="room-icon">✦</div>
+      <div><strong>St George Youth</strong><small>General community room</small></div>
+     </div>
+     <div class="messages" id="messages">
+      <p style="text-align:center;color:#82938a;font-size:12px">
+       Loading community messages…
+      </p>
+     </div>
+     <form class="composer" id="messageForm">
+      <input id="messageInput" placeholder="Write a message…" autocomplete="off">
+      <button class="send" type="submit" aria-label="Send">➤</button>
+     </form>
+    </div>
+   </div>
+   <div class="notice" id="notice"></div>
+   <div class="statusbar" id="statusbar">
+    Connecting to the St George Youth services…
+   </div>
+  </section>
+ </div>
+</main>
+</div>
+
+<div class="modal" id="nameModal">
+ <div class="modal-card">
+  <h3>Welcome to St George Youth</h3>
+  <p>Please enter the name you use in the fellowship.</p>
+  <input id="nameInput" placeholder="Your name" maxlength="60">
+  <div class="modal-actions"><button class="primary" onclick="saveName()">Continue</button></div>
+ </div>
+</div>
+
+<div class="modal" id="statusModal">
+ <div class="modal-card">
+  <h3>Share a status</h3>
+  <p>Share a photo or video with the fellowship.</p>
+  <input id="statusText" placeholder="Add a caption (optional)" maxlength="300">
+  <input id="statusFile" type="file" accept="image/*,video/*">
+  <div class="modal-actions">
+   <button class="secondary" onclick="closeStatusForm()">Cancel</button>
+   <button class="primary" id="publishButton" onclick="publishStatus()">Share status</button>
+  </div>
+  <p id="statusMessage" style="font-size:12px;color:#82938a"></p>
+ </div>
+</div>
+
+<div class="modal" id="viewerModal">
+ <div class="viewer">
+  <div id="viewerContent"></div>
+  <div id="viewerCaption"></div>
+  <button class="primary" onclick="closeViewer()">Close</button>
+ </div>
+</div>
+
+<script>
+'use strict';
+
+/* YOUR TWO EXISTING APPS SCRIPT DEPLOYMENTS */
+const CHAT_API = 'https://script.google.com/macros/s/AKfycbyX6LQnFHqPySpKc__sX34P-Kj_iJGGAvwkSyX_GVy8YCwFO_4Q2aLzGqmelpZG7apy/exec';
+const STATUS_API = 'https://script.google.com/macros/s/AKfycbwfGnGRVAnj8Rjhh25naYmQOSZlI0bp3WFHtxuxzAOX3vwkGecLXJijsouWSIkDTdPxYw/exec';
+
+const $ = id => document.getElementById(id);
+let memberName = localStorage.getItem('sgYouthMemberName') || '';
+let messages = [];
+let statuses = [];
+let sending = false;
+
+function escapeHTML(value){
+ return String(value ?? '').replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
+function notice(message){
+ $('notice').textContent = message;
+ $('notice').style.display = 'block';
+ setTimeout(()=>$('notice').style.display='none',5000);
+}
+
+async function getJSON(url){
+ const response = await fetch(url);
+ if(!response.ok) throw new Error('HTTP '+response.status);
+ return response.json();
+}
+
+async function postJSON(url,data){
+ const response = await fetch(url,{
+  method:'POST',
+  body:JSON.stringify(data)
+ });
+ if(!response.ok) throw new Error('HTTP '+response.status);
+ return response.json();
+}
+
+function updateProfile(){
+ $('profileName').textContent = memberName || 'Community Member';
+}
+
+function saveName(){
+ const value = $('nameInput').value.trim();
+ if(!value){alert('Please enter your name.');return;}
+ memberName=value;
+ localStorage.setItem('sgYouthMemberName',memberName);
+ $('nameModal').classList.remove('show');
+ updateProfile();
+ loadMessages();
+}
+
+function editName(){
+ $('nameInput').value=memberName;
+ $('nameModal').classList.add('show');
+}
+
+function showSection(id,button){
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');
+ document.querySelector('.content').scrollIntoView({behavior:'smooth'});
+}
+
+function formatTime(value){
+ const date=new Date(value);
+ if(isNaN(date.getTime())) return '';
+ return date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function renderMessages(){
+ const box=$('messages');
+ if(!messages.length){
+  box.innerHTML='<p style="text-align:center;color:#82938a;font-size:12px">No messages yet. Start the conversation!</p>';
+  return;
+ }
+ box.innerHTML=messages.map(m=>{
+  const mine=String(m.name||'').toLowerCase()===memberName.toLowerCase();
+  return `<div class="message ${mine?'mine':''}">
+   <div class="sender">${escapeHTML(m.name||'Member')}</div>
+   <div class="bubble">${escapeHTML(m.message||'')}</div>
+   <div class="time">${escapeHTML(formatTime(m.timestamp))}</div>
+  </div>`;
+ }).join('');
+ box.scrollTop=box.scrollHeight;
+}
+
+async function loadMessages(){
+ try{
+  const data=await getJSON(CHAT_API+'?action=getMessages&roomId=general');
+  if(!data.success) throw new Error(data.message||'Chat service returned an error.');
+  messages=data.messages||[];
+  renderMessages();
+  $('connection').textContent='● Chat connected';
+  $('connection').style.color='#128c63';
+ }catch(error){
+  $('connection').textContent='● Chat connection issue';
+  $('connection').style.color='#b35b43';
+  $('statusbar').textContent='Chat could not be loaded: '+error.message;
+ }
+}
+
+$('messageForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const message=$('messageInput').value.trim();
+ if(!message||sending)return;
+ if(!memberName){editName();return;}
+ sending=true;
+ $('messageInput').disabled=true;
+ try{
+  const result=await postJSON(CHAT_API,{
+   action:'sendMessage',
+   name:memberName,
+   message:message,
+   roomId:'general',
+   messageType:'text',
+   mediaUrl:'',
+   mediaId:'',
+   fileName:''
+  });
+  if(!result.success) throw new Error(result.message||'Message was not saved.');
+  $('messageInput').value='';
+  await loadMessages();
+ }catch(error){
+  notice('Message was not sent: '+error.message);
+ }finally{
+  sending=false;
+  $('messageInput').disabled=false;
+  $('messageInput').focus();
+ }
+});
+
+function openStatusForm(){
+ if(!memberName){editName();return;}
+ $('statusModal').classList.add('show');
+}
+function closeStatusForm(){
+ $('statusModal').classList.remove('show');
+ $('statusMessage').textContent='';
+}
+
+function readFile(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>resolve(String(reader.result).split(',')[1]);
+  reader.onerror=()=>reject(new Error('Could not read the selected file.'));
+  reader.readAsDataURL(file);
+});
+
+}
+
+async function publishStatus(){
+ const file=$('statusFile').files[0];
+ const caption=$('statusText').value.trim();
+ if(!file){$('statusMessage').textContent='Choose a photo or video first.';return;}
+ if(file.size>8*1024*1024){
+  $('statusMessage').textContent='Please choose a file smaller than 8 MB.';
+  return;
+ }
+ const button=$('publishButton');
+ button.disabled=true;
+ button.textContent='Uploading…';
+ try{
+  const base64=await readFile(file);
+  const now=new Date();
+  const status={
+   id:'STATUS-'+Date.now(),
+   userId:memberName,
+   userName:memberName,
+   type:file.type.startsWith('video/')?'video':'image',
+   text:caption,
+   createdAt:now.toISOString(),
+   expiresAt:new Date(now.getTime()+86400000).toISOString()
+  };
+  const result=await postJSON(STATUS_API,{
+   action:'createStatus',
+   statusId:status.id,
+   userId:status.userId,
+   userName:status.userName,
+   type:status.type,
+   text:status.text,
+   fileName:file.name,
+   mimeType:file.type,
+   fileData:base64,
+   createdAt:status.createdAt,
+   expiresAt:status.expiresAt
+  });
+  if(!result.success) throw new Error(result.message||'Status was not accepted.');
+  $('statusMessage').textContent='Status shared successfully.';
+  $('statusFile').value='';
+  $('statusText').value='';
+  await loadStatuses();
+  setTimeout(closeStatusForm,1000);
+ }catch(error){
+  $('statusMessage').textContent='Upload failed: '+error.message;
+ }finally{
+  button.disabled=false;
+  button.textContent='Share status';
+ }
+}
+
+async function loadStatuses(){
+ try{
+  const data=await getJSON(STATUS_API+'?action=getStatuses');
+  if(!data.success) throw new Error(data.message||'Status service returned an error.');
+  statuses=data.statuses||[];
+  renderStatuses();
+  $('statusbar').textContent='Chat and status services are responding. Actual posting is confirmed only after a successful save.';
+ }catch(error){
+  $('statusbar').textContent='Status service could not be loaded: '+error.message;
+ }
+}
+
+function renderStatuses(){
+ const box=$('stories');
+ const add=`<button class="story add-story" onclick="openStatusForm()">
+  <div class="story-ring"><div class="initial">+</div></div><small>My status</small></button>`;
+ const active=statuses.filter(s=>!s.expiresAt||new Date(s.expiresAt)>new Date());
+ box.innerHTML=add+active.map((s,i)=>{
+  const image=s.mediaUrl||s.fileUrl||s.url||'';
+  const initial=(s.userName||'Y').charAt(0).toUpperCase();
+  return `<button class="story" onclick="viewStatus(${i})">
+   <div class="story-ring">${image?`<img src="${escapeHTML(image)}" alt="">`:`<div class="initial">${escapeHTML(initial)}</div>`}</div>
+   <small>${escapeHTML(s.userName||'Member')}</small></button>`;
+ }).join('');
+ window.activeStatuses=active;
+}
+
+function viewStatus(index){
+ const s=(window.activeStatuses||[])[index];
+ if(!s)return;
+ const url=s.mediaUrl||s.fileUrl||s.url||'';
+ let media='';
+ if(url){
+  media=s.type==='video'
+   ?`<video src="${escapeHTML(url)}" controls autoplay></video>`
+   :`<img src="${escapeHTML(url)}" alt="Status">`;
+ }
+ $('viewerContent').innerHTML=media||'<p>Status update</p>';
+ $('viewerCaption').textContent=(s.userName||'Member')+' · '+(s.text||'');
+ $('viewerModal').classList.add('show');
+}
+function closeViewer(){
+ $('viewerModal').classList.remove('show');
+ $('viewerContent').innerHTML='';
+}
+
+updateProfile();
+if(!memberName){
+ $('nameModal').classList.add('show');
+}
+loadMessages();
+loadStatuses();
+setInterval(loadMessages,15000);
+setInterval(loadStatuses,60000);
+</script>
+</body>
+</html>
