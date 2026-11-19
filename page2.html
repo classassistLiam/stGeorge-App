@@ -1,1 +1,603 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#176b38"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="St George Youth"><link rel="apple-touch-icon" href="assets/icon.svg"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="css/styles.css"><title>Community & Status | St George Youth</title></head><body><header class="top"><a class="brand" href="index.html"><img src="assets/icon.svg" alt=""><span>ST GEORGE YOUTH</span></a><nav class="nav"><a href="index.html">Home</a><a href="page1.html">Ministry</a><a href="page2.html">Community</a><a href="page3.html">Games</a></nav></header><div class="module-head"><h1>Community & Status</h1><div class="module-actions"><a class="btn" href="community-original.html" target="_blank">Open full module ↗</a><a class="btn" href="index.html">Home</a></div></div><div class="frame-wrap"><iframe src="community-original.html" title="Community & Status" loading="eager"></iframe></div><nav class="mobilebar"><a href="index.html"><span>🏠</span>Home</a><a href="page1.html"><span>📅</span>Ministry</a><a href="page2.html"><span>💬</span>Community</a><a href="page3.html"><span>🎮</span>Games</a></nav><script src="js/app.js"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#176b38"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="St George Youth"><link rel="apple-touch-icon" href="assets/icon.svg"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="css/styles.css"><title>Community & Status | St George Youth</title></head><body><header class="top"><a class="brand" href="index.html"><img src="assets/icon.svg" alt=""><span>ST GEORGE YOUTH</span></a><nav class="nav"><a href="index.html">Home</a><a href="page1.html">Ministry</a><a href="page2.html">Community</a><a href="page3.html">Games</a></nav></header><div class="module-head"><h1>Community & Status</h1><div class="module-actions"><a class="btn" href="community-original.html" target="_blank">Open full module ↗</a><a class="btn" href="index.html">Home</a></div></div><div class="frame-wrap"><iframe src="community-original.html" title="Community & Status" loading="eager"></iframe></div><nav class="mobilebar"><a href="index.html"><span>🏠</span>Home</a><a href="page1.html"><span>📅</span>Ministry</a><a href="page2.html"><span>💬</span>Community</a><a href="page3.html"><span>🎮</span>Games</a></nav><script>
+'use strict';
+
+/* ST GEORGE YOUTH HUB — MEDIA REPAIRED */
+
+const CHAT_API = 'https://script.google.com/macros/s/AKfycbyX6LQnFHqPySpKc__sX34P-Kj_iJGGAvwkSyX_GVy8YCwFO_4Q2aLzGqmelpZG7apy/exec';
+const STATUS_API = 'https://script.google.com/macros/s/AKfycbwfGnGRVAnj8Rjhh25naYmQOSZlI0bp3WFHtxuxzAOX3vwkGecLXJijsouWSIkDTdPxYw/exec';
+
+const $ = id => document.getElementById(id);
+
+let memberName = localStorage.getItem('sgYouthMemberName') || '';
+let messages = [];
+let statuses = [];
+let sending = false;
+
+window.activeStatuses = [];
+
+function escapeHTML(value) {
+ return String(value ?? '').replace(/[&<>"']/g, c => ({
+  '&':'&amp;',
+  '<':'&lt;',
+  '>':'&gt;',
+  '"':'&quot;',
+  "'":'&#39;'
+ }[c]));
+}
+
+function notice(message) {
+ if (!$('notice')) return;
+ $('notice').textContent = message;
+ $('notice').style.display = 'block';
+ setTimeout(() => $('notice').style.display = 'none', 5000);
+}
+
+async function getJSON(url) {
+ const response = await fetch(url, {cache:'no-store'});
+ if (!response.ok) throw new Error('HTTP ' + response.status);
+ return response.json();
+}
+
+async function postJSON(url, data) {
+ const response = await fetch(url, {
+  method:'POST',
+  body:JSON.stringify(data)
+ });
+ if (!response.ok) throw new Error('HTTP ' + response.status);
+ return response.json();
+}
+
+/* PROFILE */
+
+function updateProfile() {
+ if ($('profileName')) {
+  $('profileName').textContent = memberName || 'Community Member';
+ }
+}
+
+function saveName() {
+ const value = $('nameInput').value.trim();
+ if (!value) {
+  alert('Please enter your name.');
+  return;
+ }
+
+ memberName = value;
+ localStorage.setItem('sgYouthMemberName', memberName);
+
+ $('nameModal').classList.remove('show');
+ updateProfile();
+ loadMessages();
+}
+
+function editName() {
+ $('nameInput').value = memberName;
+ $('nameModal').classList.add('show');
+}
+
+function showSection(id, button) {
+ document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+ button.classList.add('active');
+ document.querySelector('.content').scrollIntoView({behavior:'smooth'});
+}
+
+function formatTime(value) {
+ const date = new Date(value);
+ if (isNaN(date.getTime())) return '';
+ return date.toLocaleTimeString([], {
+  hour:'2-digit',
+  minute:'2-digit'
+ });
+}
+
+/* CHAT MEDIA */
+
+function driveFileURL(id) {
+ return 'https://drive.google.com/uc?export=view&id=' + encodeURIComponent(id);
+}
+
+function renderMessages() {
+ const box = $('messages');
+ if (!box) return;
+
+ if (!messages.length) {
+  box.innerHTML = '<p style="text-align:center;color:#82938a;font-size:12px">No messages yet. Start the conversation!</p>';
+  return;
+ }
+
+ box.innerHTML = messages.map(m => {
+  const mine = String(m.name || '').toLowerCase() === memberName.toLowerCase();
+  const type = String(m.messageType || 'text').toLowerCase();
+
+  let mediaUrl = m.mediaUrl || '';
+  if (!mediaUrl && m.mediaId) mediaUrl = driveFileURL(m.mediaId);
+
+  let media = '';
+
+  if (mediaUrl && type === 'image') {
+   media = `<img class="chat-media" src="${escapeHTML(mediaUrl)}" alt="Shared image" loading="lazy">`;
+  } else if (mediaUrl && type === 'video') {
+   media = `<video class="chat-media" src="${escapeHTML(mediaUrl)}" controls preload="metadata"></video>`;
+  } else if (mediaUrl && type === 'audio') {
+   media = `<audio class="chat-audio" src="${escapeHTML(mediaUrl)}" controls preload="metadata"></audio>`;
+  }
+
+  return `
+   <div class="message ${mine ? 'mine' : ''}">
+    <div class="sender">${escapeHTML(m.name || 'Member')}</div>
+    <div class="bubble">
+     ${escapeHTML(m.message || '')}
+     ${media}
+    </div>
+    <div class="time">${escapeHTML(formatTime(m.timestamp))}</div>
+   </div>
+  `;
+ }).join('');
+
+ box.scrollTop = box.scrollHeight;
+}
+
+async function loadMessages() {
+ try {
+  const data = await getJSON(CHAT_API + '?action=getMessages&roomId=general');
+
+  if (!data.success) throw new Error(data.message || 'Chat API error');
+
+  messages = data.messages || [];
+  renderMessages();
+
+  if ($('connection')) {
+   $('connection').textContent = '● Chat connected';
+   $('connection').style.color = '#128c63';
+  }
+ } catch (error) {
+  console.error('CHAT ERROR:', error);
+  if ($('connection')) {
+   $('connection').textContent = '● Chat connection issue';
+   $('connection').style.color = '#b35b43';
+  }
+ }
+}
+
+/* CHAT FILE UPLOAD */
+
+if ($('attachButton') && $('chatFile')) {
+ $('attachButton').addEventListener('click', () => $('chatFile').click());
+}
+
+async function uploadChatFile(file) {
+ if (file.size > 12 * 1024 * 1024) {
+  throw new Error('Please choose a file smaller than 12 MB.');
+ }
+
+ const reader = new FileReader();
+
+ const dataUrl = await new Promise((resolve, reject) => {
+  reader.onload = () => resolve(String(reader.result));
+  reader.onerror = () => reject(new Error('Could not read file.'));
+  reader.readAsDataURL(file);
+ });
+
+ const uploaded = await postJSON(CHAT_API, {
+  action:'uploadMedia',
+  data:dataUrl.split(',')[1],
+  fileName:file.name,
+  mimeType:file.type || 'application/octet-stream'
+ });
+
+ if (!uploaded.success || !uploaded.id) {
+  throw new Error(uploaded.message || 'Media upload failed.');
+ }
+
+ const type = file.type.startsWith('image/') ? 'image' :
+  file.type.startsWith('video/') ? 'video' : 'audio';
+
+ const url = type === 'image'
+  ? (uploaded.url || 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(uploaded.id) + '&sz=w1200')
+  : driveFileURL(uploaded.id);
+
+ return {
+  type,
+  url,
+  id:uploaded.id,
+  fileName:file.name
+ };
+}
+
+if ($('messageForm')) {
+ $('messageForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const message = $('messageInput').value.trim();
+  const file = $('chatFile')?.files[0];
+
+  if ((!message && !file) || sending) return;
+  if (!memberName) return editName();
+
+  sending = true;
+
+  $('messageInput').disabled = true;
+  if ($('attachButton')) $('attachButton').disabled = true;
+
+  try {
+   let media = {type:'text',url:'',id:'',fileName:''};
+
+   if (file) {
+    notice('Uploading your media…');
+    media = await uploadChatFile(file);
+   }
+
+   const result = await postJSON(CHAT_API, {
+    action:'sendMessage',
+    name:memberName,
+    message,
+    roomId:'general',
+    messageType:media.type,
+    mediaUrl:media.url,
+    mediaId:media.id,
+    fileName:media.fileName
+   });
+
+   if (!result.success) throw new Error(result.message || 'Message was not saved.');
+
+   $('messageInput').value = '';
+   if ($('chatFile')) $('chatFile').value = '';
+
+   await loadMessages();
+
+  } catch (error) {
+   console.error('CHAT SEND ERROR:', error);
+   notice('Message was not sent: ' + error.message);
+  } finally {
+   sending = false;
+   $('messageInput').disabled = false;
+   if ($('attachButton')) $('attachButton').disabled = false;
+   $('messageInput').focus();
+  }
+ });
+}
+
+/* STATUS FORM */
+
+function openStatusForm() {
+ if (!memberName) return editName();
+ $('statusModal').classList.add('show');
+}
+
+function closeStatusForm() {
+ $('statusModal').classList.remove('show');
+ if ($('statusMessage')) $('statusMessage').textContent = '';
+}
+
+function readFile(file) {
+ return new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => resolve(String(reader.result));
+  reader.onerror = () => reject(new Error('Could not read selected file.'));
+  reader.readAsDataURL(file);
+ });
+}
+
+/* PUBLISH STATUS */
+
+async function publishStatus() {
+ const file = $('statusFile')?.files[0];
+ const caption = $('statusText')?.value.trim() || '';
+
+ if (!file && !caption) {
+  $('statusMessage').textContent = 'Write a message or choose media first.';
+  return;
+ }
+
+ if (file && file.size > 10 * 1024 * 1024) {
+  $('statusMessage').textContent = 'Please choose a file smaller than 10 MB.';
+  return;
+ }
+
+ const button = $('publishButton');
+ button.disabled = true;
+ button.textContent = 'Sharing…';
+
+ try {
+  const fileData = file ? await readFile(file) : '';
+
+  const type = !file ? 'text' :
+   file.type.startsWith('video/') ? 'video' :
+   file.type.startsWith('audio/') ? 'audio' : 'image';
+
+  const result = await postJSON(STATUS_API, {
+   action:'createStatus',
+   userId:memberName,
+   userName:memberName,
+   avatar:'',
+   type,
+   text:caption,
+   fileName:file ? file.name : '',
+   mimeType:file ? file.type : '',
+   fileData
+  });
+
+  if (!result.success) {
+   throw new Error(result.message || 'Status was not accepted.');
+  }
+
+  $('statusMessage').textContent = 'Status shared successfully!';
+  $('statusFile').value = '';
+  $('statusText').value = '';
+
+  await loadStatuses();
+
+  setTimeout(closeStatusForm, 1000);
+
+ } catch (error) {
+  console.error('STATUS UPLOAD ERROR:', error);
+  $('statusMessage').textContent = 'Upload failed: ' + error.message;
+ } finally {
+  button.disabled = false;
+  button.textContent = 'Share status';
+ }
+}
+
+/* STATUS MEDIA URL RESOLVER */
+
+function statusMediaURL(s) {
+  if (!s) return "";
+
+  const fileId = s.fileId || s.mediaId || "";
+
+  if (fileId) {
+    if (s.type === "image" || (s.mimeType || "").startsWith("image/")) {
+      return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
+    }
+
+    return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
+  }
+
+  return s.media || s.mediaUrl || s.fileUrl || s.url || "";
+}
+
+/* LOAD STATUSES */
+
+async function loadStatuses() {
+ try {
+  console.log('Loading statuses from server...');
+
+  const data = await getJSON(STATUS_API + '?action=getStatuses');
+
+  if (!data.success) throw new Error(data.message || 'Status API error');
+
+  statuses = Array.isArray(data.statuses) ? data.statuses : [];
+
+  console.log('Statuses received:', statuses.length);
+  console.table(statuses.map(s => ({
+   user:s.userName,
+   type:s.type,
+   media:s.media,
+   fileId:s.fileId
+  })));
+
+  renderStatuses();
+
+  if ($('statusbar')) {
+   $('statusbar').textContent = statuses.length +
+    ' fellowship statuses loaded successfully.';
+  }
+
+ } catch (error) {
+  console.error('STATUS LOAD ERROR:', error);
+
+  if ($('statusbar')) {
+   $('statusbar').textContent = 'Status loading error: ' + error.message;
+  }
+ }
+}
+
+/* RENDER STORY CIRCLES */
+
+function renderStatuses() {
+ const box = $('stories');
+ if (!box) return;
+
+ const active = statuses.filter(s =>
+  !s.expiresAt || new Date(s.expiresAt) > new Date()
+ );
+
+ window.activeStatuses = active;
+
+ const add = `
+  <button class="story add-story" onclick="openStatusForm()">
+   <div class="story-ring"><div class="initial">+</div></div>
+   <small>My status</small>
+  </button>
+ `;
+
+ const cards = active.map((s, i) => {
+  const media = statusMediaURL(s);
+  const type = String(s.type || 'text').toLowerCase();
+  const initial = (s.userName || 'Y').charAt(0).toUpperCase();
+
+  let thumb = '';
+
+  if (media && type === 'image') {
+   thumb = `
+    <img
+     src="${escapeHTML(media)}"
+     alt="Status"
+     loading="lazy"
+     onerror="this.style.display='none';this.parentElement.innerHTML='<div class=initial>📷</div>'"
+    >
+   `;
+  } else if (type === 'video') {
+   thumb = '<div class="initial">▶</div>';
+  } else if (type === 'audio') {
+   thumb = '<div class="initial">♫</div>';
+  } else {
+   thumb = `<div class="initial">${escapeHTML(initial)}</div>`;
+  }
+
+  return `
+   <button class="story" onclick="viewStatus(${i})">
+    <div class="story-ring">${thumb}</div>
+    <small>${escapeHTML(s.userName || 'Member')}</small>
+   </button>
+  `;
+ }).join('');
+
+ box.innerHTML = add + cards;
+}
+
+/* VIEW STATUS — IMAGE, VIDEO, AUDIO AND TEXT */
+
+function viewStatus(index) {
+ const s = window.activeStatuses[index];
+ if (!s) return;
+
+ const url = statusMediaURL(s);
+ const type = String(s.type || 'text').toLowerCase();
+
+ console.log('Opening status:', {
+  type,
+  url,
+  fileId:s.fileId,
+  status:s
+ });
+
+ let media = '';
+
+ if (url && type === 'image') {
+  media = `
+   <img
+    src="${escapeHTML(url)}"
+    alt="Fellowship status"
+    style="max-width:100%;max-height:65vh;object-fit:contain"
+    onerror="this.outerHTML='<p>Image could not be displayed. Check Drive sharing permissions.</p>'"
+   >
+  `;
+ } else if (url && type === 'video') {
+  media = `
+   <video
+    src="${escapeHTML(url)}"
+    controls
+    autoplay
+    playsinline
+    preload="metadata"
+    style="width:100%;max-height:65vh"
+    onerror="this.insertAdjacentHTML('afterend','<p>Video playback failed. Try opening the media link directly.</p>')"
+   ></video>
+  `;
+ } else if (url && type === 'audio') {
+  media = `
+   <div style="padding:25px 10px">
+    <div style="font-size:45px">🎵</div>
+    <p>${escapeHTML(s.fileName || 'Fellowship voice note')}</p>
+    <audio
+     src="${escapeHTML(url)}"
+     controls
+     autoplay
+     preload="metadata"
+     style="width:100%"
+     onerror="this.insertAdjacentHTML('afterend','<p>Audio playback failed. Try opening the media link directly.</p>')"
+    ></audio>
+   </div>
+  `;
+ } else {
+  media = `
+   <div style="padding:35px 10px;font-size:18px">
+    ${escapeHTML(s.text || 'Fellowship update')}
+   </div>
+  `;
+ }
+
+ $('viewerContent').innerHTML = media;
+ $('viewerCaption').textContent =
+  (s.userName || 'Member') + ' · ' + (s.text || '');
+
+ $('viewerModal').classList.add('show');
+}
+
+function closeViewer() {
+ $('viewerModal').classList.remove('show');
+ $('viewerContent').innerHTML = '';
+}
+
+/* START APP */
+
+updateProfile();
+
+if (!memberName && $('nameModal')) {
+ $('nameModal').classList.add('show');
+}
+
+loadMessages();
+loadStatuses();
+
+setInterval(loadMessages, 15000);
+setInterval(loadStatuses, 60000);
+
+  </script>
+<script>
+
+
+/* ==========================================
+   ST GEORGE YOUTH — SEASONAL THEME ENGINE
+   Halloween: November 1–20
+   Christmas: November 21–December 31
+========================================== */
+
+(function seasonalTheme() {
+  function applySeasonalTheme() {
+    const now = new Date();
+    const month = now.getMonth();
+    const day = now.getDate();
+
+    const halloween =
+      month === 10 && day <= 20;
+
+    const christmas =
+      (month === 10 && day >= 21) ||
+      month === 11;
+
+    const decorations = halloween
+      ? ["🍂", "🎃", "👻", "🕸️", "🍁"]
+      : christmas
+        ? ["❄️", "🎄", "⭐", "🔔", "🎁"]
+        : ["🍃", "🌿", "🍃", "🌱", "🍃"];
+
+    document.body.classList.remove(
+      "halloween-season",
+      "christmas-season"
+    );
+
+    if (halloween) {
+      document.body.classList.add("halloween-season");
+    } else if (christmas) {
+      document.body.classList.add("christmas-season");
+    }
+
+    const floatingItems =
+      document.querySelectorAll(".floating-leaf");
+
+    floatingItems.forEach((item, index) => {
+      item.textContent =
+        decorations[index % decorations.length];
+    });
+
+    console.log(
+      "St George seasonal theme:",
+      halloween ? "Halloween 🎃" :
+      christmas ? "Christmas 🎄" : "Regular 🌿"
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      applySeasonalTheme
+    );
+  } else {
+    applySeasonalTheme();
+  }
+})();
+
+
+</script></body></html>
